@@ -85,7 +85,7 @@ const Page = () => {
                 <p className="text-sm text-gray-600">Auteur : {livre.auteur}</p>
                 <p className="text-sm text-gray-500">Genre : {livre.genre || 'N/A'}</p>
                 <div className="card-actions justify-end">
-                  <button className="btn btn-primary">Réserver</button>
+                  <button className="btn btn-primary">Emprunter</button>
                 </div>
               </div>
             </div>
