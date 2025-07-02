@@ -13,6 +13,7 @@ const schema = yup.object().shape({
   telephone: yup.string().required('Le téléphone est requis'),
   email: yup.string().email('Email invalide').required('L\'email est requis'),
   mot_de_passe: yup.string().min(6, 'Le mot de passe doit contenir au moins 6 caractères').required('Le mot de passe est requis'),
+  role: yup.string().oneOf(['admin', 'etudiant'], 'Le rôle est requis').required('Le rôle est requis'),
 });
 
 type FormData = yup.InferType<typeof schema>;
@@ -37,7 +38,8 @@ export default function InscriptionForm() {
         email: data.email,
         password: data.mot_de_passe, // Changement de mot_de_passe à password pour correspondre au backend
         telephone: data.telephone,
-        sexe: data.sexe
+        sexe: data.sexe,
+        role: data.role
       };
 
       console.log('Envoi des données:', userData);
@@ -46,23 +48,27 @@ export default function InscriptionForm() {
       
       console.log('Réponse du serveur:', response.data);
 
-      if (response.data.Error === true) {
-        alert(response.data.Message);
+      if (response.data.error === true) {
+        alert(response.data.message);
         return;
       }
 
-      if (response.data.Message === "Success") {
+      if (response.data.message && response.data.message.toLowerCase().includes('inscription réussie')) {
         alert('Inscription réussie ! Vous pouvez maintenant vous connecter.');
         router.push('/Connexion');
-      } else if (response.data.Message === "Email Id already registered") {
+      } else if (response.data.message && response.data.message.toLowerCase().includes('déjà utilisée')) {
         alert('Cette adresse email est déjà utilisée.');
       } else {
-        alert(response.data.Message || 'Erreur lors de l\'inscription');
+        alert(response.data.message || 'Erreur lors de l\'inscription');
       }
     } catch (error) {
       console.error('Erreur détaillée:', error);
       if (axios.isAxiosError(error)) {
-        alert('Erreur lors de l\'inscription : ' + (error.response?.data?.Message || error.message));
+        if (error.response?.status === 409) {
+          alert('Cette adresse email est déjà utilisée.');
+        } else {
+          alert('Erreur lors de l\'inscription : ' + (error.response?.data?.Message || error.message));
+        }
       } else {
         alert('Erreur lors de l\'inscription. Veuillez réessayer.');
       }
@@ -77,6 +83,19 @@ export default function InscriptionForm() {
         </h2>
 
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Rôle</label>
+            <select
+              {...register('role')}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+              defaultValue="etudiant"
+            >
+              <option value="" disabled>Choisissez un rôle</option>
+              <option value="etudiant">Étudiant</option>
+              <option value="admin">Admin</option>
+            </select>
+            <p className="text-sm text-red-500">{errors.role?.message}</p>
+          </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Nom</label>
             <input

@@ -28,9 +28,14 @@ export default function HomePage() {
 
             if (res.data.token) {
                 localStorage.setItem('token', res.data.token);
-                console.log('Token stocké:', res.data.token); // Debug log
-                // Redirige vers la page environnement après connexion
-                window.location.href = '/Environnement';
+                localStorage.setItem('userRole', res.data.user?.role || 'etudiant');
+                localStorage.setItem('userId', res.data.user?.id || '');
+                // Redirige selon le rôle
+                if (res.data.user?.role === 'admin') {
+                  window.location.href = '/Admin';
+                } else {
+                  window.location.href = '/Environnement';
+                }
             } else {
                 console.error('Pas de token reçu dans la réponse');
                 alert('Erreur de connexion: Token non reçu');
