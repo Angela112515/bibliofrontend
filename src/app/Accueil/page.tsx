@@ -77,7 +77,7 @@ const page = () => {
   </div>
 
   {/* Content */}
-  <div className="text-center max-w-4xl mx-auto relative z-10 text-white px-4">
+  <div className="text-center max-w-4xl mx-auto relative z-10 text-white ">
     <div className="animate-bounce mb-8 flex justify-center">
       {/* Logo image */}
       <Image

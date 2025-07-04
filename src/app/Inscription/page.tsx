@@ -5,6 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 const schema = yup.object().shape({
   nom: yup.string().required('Le nom est requis'),
@@ -31,12 +32,11 @@ export default function InscriptionForm() {
 
   const onSubmit = async (data: FormData) => {
     try {
-      // Modification du corps de la requête pour correspondre à l'attente du backend
       const userData = {
         nom: data.nom,
         prenom: data.prenom,
         email: data.email,
-        password: data.mot_de_passe, // Changement de mot_de_passe à password pour correspondre au backend
+        password: data.mot_de_passe,
         telephone: data.telephone,
         sexe: data.sexe,
         role: data.role
@@ -76,102 +76,135 @@ export default function InscriptionForm() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-          Inscription
-        </h2>
+    <div className="min-h-screen flex items-center justify-center bg-blue-50">
+      <div className="flex w-full max-w-5xl bg-white rounded-xl shadow-lg overflow-hidden h-[600px]">
+        {/* Section image avec des livres - Prend toute la hauteur et largeur */}
+        <div className="hidden md:block md:w-1/2 relative">
+          <Image 
+            src="/Assets/biblio.jpg" 
+            alt="Livres pour l'éducation"
+            layout="fill"
+            objectFit="cover"
+            className="opacity-90"
+            priority
+          />
+          <div className="absolute inset-0 bg-blue-800/20 flex items-center justify-center">
+            <div className="text-center p-8">
+              <h2 className="text-3xl font-bold text-white mb-4">Bienvenue sur notre plateforme</h2>
+              <p className="text-white/90">Rejoignez notre communauté d'apprentissage</p>
+            </div>
+          </div>
+        </div>
 
-        <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Rôle</label>
-            <select
-              {...register('role')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
-              defaultValue="etudiant"
+        {/* Formulaire d'inscription */}
+        <div className="w-full md:w-1/2 p-8 overflow-y-auto">
+          <h2 className="text-3xl font-bold text-blue-800 mb-6 text-center">
+            Créer un compte
+          </h2>
+
+          <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+            <div>
+              <label className="block text-sm font-medium text-blue-700 mb-1">Rôle</label>
+              <select
+                {...register('role')}
+                className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white"
+                defaultValue="etudiant"
+              >
+                <option value="" disabled>Choisissez un rôle</option>
+                <option value="etudiant">Étudiant</option>
+                <option value="admin">Administrateur</option>
+              </select>
+              <p className="text-sm text-red-500 mt-1">{errors.role?.message}</p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-blue-700 mb-1">Nom</label>
+                <input
+                  type="text"
+                  {...register('nom')}
+                  className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  placeholder="Votre nom"
+                />
+                <p className="text-sm text-red-500 mt-1">{errors.nom?.message}</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-blue-700 mb-1">Prénom</label>
+                <input
+                  type="text"
+                  {...register('prenom')}
+                  className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  placeholder="Votre prénom"
+                />
+                <p className="text-sm text-red-500 mt-1">{errors.prenom?.message}</p>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-blue-700 mb-1">Sexe</label>
+              <select
+                {...register('sexe')}
+                className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white"
+                defaultValue=""
+              >
+                <option value="" disabled>Choisissez votre sexe</option>
+                <option value="Homme">Homme</option>
+                <option value="Femme">Femme</option>
+              </select>
+              <p className="text-sm text-red-500 mt-1">{errors.sexe?.message}</p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-blue-700 mb-1">Téléphone</label>
+              <input
+                type="text"
+                {...register('telephone')}
+                className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                placeholder="Votre numéro"
+              />
+              <p className="text-sm text-red-500 mt-1">{errors.telephone?.message}</p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-blue-700 mb-1">Email</label>
+              <input
+                type="email"
+                {...register('email')}
+                className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                placeholder="exemple@email.com"
+              />
+              <p className="text-sm text-red-500 mt-1">{errors.email?.message}</p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-blue-700 mb-1">Mot de passe</label>
+              <input
+                type="password"
+                {...register('mot_de_passe')}
+                className="w-full px-4 py-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                placeholder="••••••••"
+              />
+              <p className="text-sm text-red-500 mt-1">{errors.mot_de_passe?.message}</p>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition-colors shadow-md"
             >
-              <option value="" disabled>Choisissez un rôle</option>
-              <option value="etudiant">Étudiant</option>
-              <option value="admin">Admin</option>
-            </select>
-            <p className="text-sm text-red-500">{errors.role?.message}</p>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Nom</label>
-            <input
-              type="text"
-              {...register('nom')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
-              placeholder="Votre nom"
-            />
-            <p className="text-sm text-red-500">{errors.nom?.message}</p>
-          </div>
+              S'inscrire
+            </button>
+          </form>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
-            <input
-              type="text"
-              {...register('prenom')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
-              placeholder="Votre prénom"
-            />
-            <p className="text-sm text-red-500">{errors.prenom?.message}</p>
+          <div className="mt-6 text-center">
+            <p className="text-sm text-blue-600">
+              Déjà un compte?{' '}
+              <a href="/Connexion" className="font-medium text-blue-800 hover:underline">
+                Se connecter
+              </a>
+            </p>
           </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Sexe</label>
-            <select
-              {...register('sexe')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
-              defaultValue=""
-            >
-              <option value="" disabled>Choisissez votre sexe</option>
-              <option value="Homme">Homme</option>
-              <option value="Femme">Femme</option>
-            </select>
-            <p className="text-sm text-red-500">{errors.sexe?.message}</p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
-            <input
-              type="text"
-              {...register('telephone')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
-              placeholder="Votre téléphone"
-            />
-            <p className="text-sm text-red-500">{errors.telephone?.message}</p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input
-              type="email"
-              {...register('email')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
-              placeholder="Votre email"
-            />
-            <p className="text-sm text-red-500">{errors.email?.message}</p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
-            <input
-              type="password"
-              {...register('mot_de_passe')}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
-              placeholder="Votre mot de passe"
-            />
-            <p className="text-sm text-red-500">{errors.mot_de_passe?.message}</p>
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 rounded-lg transition-colors"
-          >
-            Enregistrer
-          </button>
-        </form>
+        </div>
       </div>
     </div>
   );

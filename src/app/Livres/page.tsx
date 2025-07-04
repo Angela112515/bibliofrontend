@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import Image from 'next/image'
 import { Search, Filter, Book, User, Calendar, CheckCircle, XCircle, Clock, Sparkles } from 'lucide-react'
+import LivreNoteCommentaire from '../../../elements/LivreNoteCommentaire';
 
 type Livre = {
   id: number;
@@ -97,8 +98,10 @@ const Page = () => {
       const res = await axios.get('http://localhost:4400/api/livres');
       setLivres(res.data);
       fermerFormulaireEmprunt();
-    } catch (err: any) {
+    } catch (err) {
+      // @ts-ignore
       alert(
+        // @ts-ignore
         err.response?.data?.message ||
         "Erreur lors de l'emprunt du livre."
       );
@@ -116,21 +119,33 @@ const Page = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
       {/* Header avec titre et description */}
-      <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 text-white py-12 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center gap-4 mb-4">
-            <div className="p-3 bg-white/20 rounded-full border border-white/30">
-              <Book className="w-8 h-8 text-white" />
-            </div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
-              Catalogue des Livres
-            </h1>
-          </div>
-          <p className="text-xl text-blue-100 max-w-3xl">
-            Découvrez notre collection de {livres.length} ouvrages et empruntez vos livres préférés en quelques clics.
-          </p>
-        </div>
+<div className="relative overflow-hidden bg-gradient-to-r from-emerald-200 via-blue-400 to-blue-800 text-white py-16 px-6">
+  {/* Décoration animée en arrière-plan */}
+  <div className="absolute -top-10 -left-10 w-72 h-72 bg-blue-400 opacity-20 rounded-full blur-3xl animate-pulse"></div>
+  <div className="absolute top-0 right-0 w-96 h-96 bg-blue-300 opacity-10 rounded-full blur-2xl animate-pulse"></div>
+
+  <div className="relative max-w-7xl mx-auto text-center">
+    <div className="inline-flex items-center gap-4 mb-6">
+      <div className="p-4 bg-white/20 rounded-full border border-white/30 shadow-lg animate-bounce-slow">
+        <Book className="w-10 h-10 text-white" />
       </div>
+      <h1 className="text-5xl font-extrabold bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent drop-shadow-lg transition-all duration-500 hover:scale-105">
+        Catalogue des Livres
+      </h1>
+    </div>
+    <p className="text-lg md:text-xl text-blue-100 max-w-2xl mx-auto">
+      Découvrez notre collection de <span className="font-bold text-white">{livres.length}</span> ouvrages et empruntez vos livres préférés en quelques clics.
+    </p>
+    {/* Bouton CTA */}
+    <div className="mt-8">
+      <button className="inline-flex items-center gap-2 bg-white text-blue-700 font-semibold px-6 py-3 rounded-full shadow-md hover:bg-blue-50 transition transform hover:scale-105">
+        <Book className="w-5 h-5" />
+        Explorer maintenant
+      </button>
+    </div>
+  </div>
+</div>
+
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Barre de filtres améliorée */}
@@ -206,62 +221,70 @@ const Page = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {livresFiltres.map((livre) => (
               <div key={livre.id} className="group relative">
-                <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-gray-200 hover:border-blue-300">
-                  {/* Image du livre */}
-                  <div className="relative h-48 overflow-hidden">
-                    <Image
-                      src={livre.image && livre.image.startsWith('/uploads/')
-                        ? `http://localhost:4400${livre.image}`
-                        : (livre.image || 'https://img.daisyui.com/images/stock/photo-1635805737707-575885ab0820.webp')}
-                      alt={livre.titre}
-                      fill
-                      className="object-cover transition-transform duration-300 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-                    {/* Badge de statut */}
-                    <div className="absolute top-3 right-3">
-                      <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
-                        livre.statut === 'disponible' 
-                          ? 'bg-green-100 text-green-700 border border-green-200' 
-                          : 'bg-red-100 text-red-700 border border-red-200'
-                      }`}>
-                        {getStatutIcon(livre.statut || '')}
-                        {livre.statut || 'Non défini'}
-                      </div>
-                    </div>
-                  </div>
-                  {/* Contenu de la carte */}
-                  <div className="p-5">
-                    <h3 className="text-lg font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
-                      {livre.titre}
-                    </h3>
-                    <div className="space-y-2 mb-4">
-                      <div className="flex items-center gap-2 text-gray-600 text-sm">
-                        <User className="w-4 h-4 text-blue-600" />
-                        <span>{livre.auteur}</span>
-                      </div>
-                      {livre.genre && (
-                        <div className="flex items-center gap-2 text-gray-600 text-sm">
-                          <Sparkles className="w-4 h-4 text-blue-600" />
-                          <span>{livre.genre}</span>
-                        </div>
-                      )}
-                    </div>
-                    {/* Bouton d'emprunt */}
-                    <button
-                      onClick={() => ouvrirFormulaireEmprunt(livre)}
-                      disabled={livre.statut !== 'disponible'}
-                      className={`w-full py-3 px-4 rounded-lg font-semibold transition-all duration-200 ${
-                        livre.statut === 'disponible'
-                          ? 'bg-blue-600 hover:bg-blue-700 text-white transform hover:scale-105 shadow-md hover:shadow-blue-500/25'
-                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      }`}
-                    >
-                      {livre.statut === 'disponible' ? 'Emprunter' : 'Non disponible'}
-                    </button>
-                  </div>
-                </div>
-              </div>
+  <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-gray-200 hover:border-blue-300 
+    flex flex-col h-full">
+    {/* Image du livre */}
+    <div className="relative h-48 overflow-hidden">
+      <Image
+        src={livre.image && livre.image.startsWith('/uploads/')
+          ? `http://localhost:4400${livre.image}`
+          : (livre.image || 'https://img.daisyui.com/images/stock/photo-1635805737707-575885ab0820.webp')}
+        alt={livre.titre}
+        fill
+        className="object-cover transition-transform duration-300 group-hover:scale-110"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+      {/* Badge de statut */}
+      <div className="absolute top-3 right-3">
+        <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${
+          livre.statut === 'disponible' 
+            ? 'bg-green-100 text-green-700 border border-green-200' 
+            : 'bg-red-100 text-red-700 border border-red-200'
+        }`}>
+          {getStatutIcon(livre.statut || '')}
+          {livre.statut || 'Non défini'}
+        </div>
+      </div>
+    </div>
+
+    {/* Contenu de la carte */}
+    <div className="p-5 flex flex-col flex-grow justify-between">
+      <div>
+        <h3 className="text-lg font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
+          {livre.titre}
+        </h3>
+        <LivreNoteCommentaire livreId={livre.id} />
+        <div className="space-y-2 mb-4">
+          <div className="flex items-center gap-2 text-gray-600 text-sm">
+            <User className="w-4 h-4 text-blue-600" />
+            <span>{livre.auteur}</span>
+          </div>
+          {livre.genre && (
+            <div className="flex items-center gap-2 text-gray-600 text-sm">
+              <Sparkles className="w-4 h-4 text-blue-600" />
+              <span>{livre.genre}</span>
+            </div>
+          )}
+        </div>
+      </div>
+      {/* Note et commentaire */}
+      <LivreNoteCommentaire livreId={livre.id} />
+      {/* Bouton d'emprunt */}
+      <button
+        onClick={() => ouvrirFormulaireEmprunt(livre)}
+        disabled={livre.statut !== 'disponible'}
+        className={`w-full py-3 px-4 rounded-lg font-semibold transition-all duration-200 mt-4 ${
+          livre.statut === 'disponible'
+            ? 'bg-blue-600 hover:bg-blue-700 text-white transform hover:scale-105 shadow-md hover:shadow-blue-500/25'
+            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+        }`}
+      >
+        {livre.statut === 'disponible' ? 'Emprunter' : 'Non disponible'}
+      </button>
+    </div>
+  </div>
+</div>
+
             ))}
             {/* Modal global pour l'emprunt */}
             {livreSelectionne && (
@@ -277,15 +300,15 @@ const Page = () => {
                   <div className="bg-gray-50 rounded-lg p-4 mb-6 border border-gray-200">
                     <div className="space-y-2">
                       <div className="flex justify-between">
-                        <span className="text-gray-600 text-sm">Titre :</span>
+                        <span className="text-gray-600 text-sm">Titre&nbsp;:</span>
                         <span className="text-gray-800 font-medium">{livreSelectionne.titre}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600 text-sm">Auteur :</span>
+                        <span className="text-gray-600 text-sm">Auteur&nbsp;:</span>
                         <span className="text-gray-800">{livreSelectionne.auteur}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600 text-sm">Genre :</span>
+                        <span className="text-gray-600 text-sm">Genre&nbsp;:</span>
                         <span className="text-gray-800">{livreSelectionne.genre || 'N/A'}</span>
                       </div>
                     </div>
@@ -294,7 +317,7 @@ const Page = () => {
                     {/* Date d'emprunt */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Date d'emprunt
+                        Date d&apos;emprunt
                       </label>
                     <input
                       type="date"

@@ -1,3 +1,4 @@
+"use client"
 import React from 'react';
 import Head from 'next/head';
 import { BookOpen, Users, Clock, Shield, Award, Heart, Zap, Globe } from 'lucide-react';
@@ -37,7 +38,7 @@ const AboutPage = () => {
     {
       name: "Marie Dubois",
       role: "Directrice de la Bibliothèque",
-      description: "15 ans d'expérience en gestion documentaire",
+      description: "15 ans d&apos;expérience en gestion documentaire",
       avatar: "MD"
     },
     {
@@ -57,7 +58,7 @@ const AboutPage = () => {
   return (
     <>
       <Head>
-        <title>À propos - BiblioTech</title>
+        <title>À propos - BiblioFlex</title>
         <meta name="description" content="Découvrez BiblioTech, votre bibliothèque numérique moderne. Accédez à des milliers de livres en ligne." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
@@ -75,7 +76,7 @@ const AboutPage = () => {
                 À propos de BiblioTech
               </h1>
               <p className="text-xl text-blue-100 max-w-3xl mx-auto leading-relaxed">
-                Nous révolutionnons l'accès à la connaissance en offrant une expérience de lecture numérique 
+                Nous révolutionnons l&apos;accès à la connaissance en offrant une expérience de lecture numérique 
                 moderne, intuitive et accessible à tous.
               </p>
             </div>
@@ -90,12 +91,12 @@ const AboutPage = () => {
                 Notre Mission
               </h2>
               <p className="text-lg text-gray-700 mb-6 leading-relaxed">
-                BiblioTech a été créée avec une vision simple mais ambitieuse : démocratiser l'accès 
+                BiblioTech a été créée avec une vision simple mais ambitieuse : démocratiser l&apos;accès 
                 à la connaissance en combinant la richesse du patrimoine littéraire avec les possibilités 
                 infinies du numérique.
               </p>
               <p className="text-lg text-gray-700 mb-8 leading-relaxed">
-                Nous croyons que chaque personne mérite d'avoir accès à une bibliothèque mondiale, 
+                Nous croyons que chaque personne mérite d&apos;avoir accès à une bibliothèque mondiale, 
                 disponible à tout moment et adaptée à ses besoins spécifiques.
               </p>
               <div className="flex flex-wrap gap-4">
@@ -225,19 +226,19 @@ const AboutPage = () => {
         <section className="py-20 bg-gradient-to-r from-indigo-600 via-blue-600 to-purple-700 text-white">
           <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
             <h2 className="text-4xl font-bold mb-6">
-              Prêt à Rejoindre l'Aventure ?
+              Prêt à Rejoindre l&apos;Aventure ?
             </h2>
             <p className="text-xl text-blue-100 mb-8 leading-relaxed">
               Découvrez des milliers de livres, rejoignez une communauté passionnée 
               et transformez votre façon de lire.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-white text-blue-600 px-8 py-4 rounded-full font-bold text-lg hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 shadow-lg">
+              <a href="/Inscription" className="bg-white text-blue-600 px-8 py-4 rounded-full font-bold text-lg hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center">
                 Créer un Compte
-              </button>
-              <button className="border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-blue-600 transition-all duration-300 transform hover:scale-105">
+              </a>
+              <a href="/Livres" className="border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-blue-600 transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
                 Explorer le Catalogue
-              </button>
+              </a>
             </div>
           </div>
         </section>
